@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <GridPane hgap="15.0" maxWidth="600.0" styleClass="card" vgap="15.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <Label text="Hóspede" />
+            <ComboBox fx:id="cbGuest" prefWidth="150.0" GridPane.columnIndex="1" />
+            <Label text="Quarto" GridPane.rowIndex="1" />
+            <ComboBox fx:id="cbRoom" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Check-In" GridPane.rowIndex="2" />
+            <DatePicker fx:id="dpCheckIn" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <DatePicker fx:id="dpCheckOut" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Check-Out" GridPane.rowIndex="3" />
+            <Label text="Valor Total" GridPane.rowIndex="4" />
+            <Label fx:id="lblTotal" styleClass="lblTotal" stylesheets="@style.css" text="R$ 0,00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+   </center>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+         <children>
+            <Button fx:id="btnCheckIn" mnemonicParsing="false" text="Check-In" />
+            <Button fx:id="btnCheckOut" layoutX="25.0" layoutY="25.0" mnemonicParsing="false" text="Check-Out" />
+            <Button fx:id="btnCancel" layoutX="87.0" layoutY="25.0" mnemonicParsing="false" text="Cancelar" />
+         </children></HBox>
+   </bottom>
+</BorderPane>

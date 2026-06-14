@@ -1,0 +1,83 @@
+<!-- View Style for login.fxml -->
+.root {
+    -fx-background-color: #F4F6F9;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,4);
+}
+
+.button {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.label-error {
+    -fx-text-fill: #E74C3C;
+}
+<!-- View Style for dashboard.fxml -->
+.header {
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5,0,0,2);
+}
+
+.sidebar {
+    -fx-background-color: #2C3E50;
+    -fx-padding: 10;
+}
+
+.sidebar .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.sidebar .button:hover {
+    -fx-background-color: #34495E;
+}
+
+<!-- View Style for guests.fxml -->
+
+.table-view {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.button {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.button:hover {
+    -fx-background-color: #2980B9;
+}
+
+<!-- View Style for rooms.fxml -->
+.combo-box {
+    -fx-background-radius: 6;
+}
+
+.text-field {
+    -fx-background-radius: 6;
+}
+
+<!-- View Style for reservations.fxml -->
+.label {
+    -fx-font-size: 14px;
+}
+
+.lblTotal {
+    -fx-font-size: 18px;
+    -fx-text-fill: #2ECC71;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-radius: 8;
+}

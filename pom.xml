@@ -67,7 +67,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.hotel.Main</mainClass>
+                            <mainClass>br.com.hotel.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,20 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #F4F6F9;" stylesheets="@./style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <StackPane layoutX="200.0" layoutY="125.0" prefHeight="150.0" prefWidth="200.0" />
-      <VBox layoutX="150.0" layoutY="92.0" prefHeight="200.0" prefWidth="300.0" spacing="10.0" styleClass="card" stylesheets="@style.css">
-         <children>
-            <Label text="Digite seu e-mail" />
-            <TextField fx:id="txtEmail" promptText="email@exemple.com" />
-            <Label text="Digite sua senha" />
-            <PasswordField fx:id="txtPassword" />
-            <Label fx:id="lblError" layoutX="10.0" layoutY="10.0" textFill="#e74c3c" />
-            <Button fx:id="btnLogin" mnemonicParsing="false" text="Login" />
-         </children>
-      </VBox>
-   </children>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="br.com.hotel.controller.LoginController"
+            prefHeight="500.0" 
+            prefWidth="700.0"
+            style="-fx-background-color: #f4f6f9;"
+            stylesheets="@style.css">
+
+    <children>
+        <!-- Container central do login -->
+        <VBox layoutX="200.0" 
+              layoutY="100.0" 
+              prefHeight="280.0" 
+              prefWidth="320.0" 
+              spacing="15.0" 
+              alignment="CENTER"
+              styleClass="card">
+
+            <padding>
+                <Insets top="30.0" right="30.0" bottom="30.0" left="30.0"/>
+            </padding>
+
+            <children>
+                <!-- Título -->
+                <Label text="Hotel Meia Boca Juniors" 
+                       styleClass="title-label"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label text="Bem-vindo! Faça seu login" 
+                       styleClass="subtitle-label"/>
+
+                <!-- Campos -->
+                <Label text="E-mail" styleClass="label-bold"/>
+                <TextField fx:id="txtEmail" 
+                           promptText="email@exemplo.com" />
+
+                <Label text="Senha" styleClass="label-bold"/>
+                <PasswordField fx:id="txtPassword" />
+
+                <!-- Mensagem de erro -->
+                <Label fx:id="lblError" 
+                       textFill="#e74c3c" 
+                       style="-fx-font-size: 13px;"
+                       visible="false" />
+
+                <!-- Botão Login -->
+                <Button fx:id="btnLogin" 
+                        text="Entrar" 
+                        onAction="#handleLogin"
+                        prefWidth="200.0"
+                        styleClass="button-primary"
+                        defaultButton="true" />
+
+            </children>
+        </VBox>
+    </children>
 </AnchorPane>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox prefHeight="60.0" prefWidth="200.0" spacing="5.0" styleClass="header" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Hotel Meia Boca Juniors" />
+            <Label fx:id="lblUser" text="Bem vindo, Admin!" />
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="150.0" spacing="10.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnDashboard" mnemonicParsing="false" text="Dashboard" />
+            <Button fx:id="btnGuests" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Hóspedes" />
+            <Button fx:id="btnRooms" layoutX="10.0" layoutY="45.0" mnemonicParsing="false" text="Quartos" />
+            <Button fx:id="btnReservations" layoutX="10.0" layoutY="80.0" mnemonicParsing="false" text="Reservas" />
+            <Button fx:id="btnLogout" layoutX="10.0" layoutY="80.0" mnemonicParsing="false" text="Logout" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <StackPane fx:id="contentArea" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

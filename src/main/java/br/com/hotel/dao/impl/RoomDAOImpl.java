@@ -20,6 +20,23 @@ public class RoomDAOImpl implements RoomDAO {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, room.getRoomNumber());
+            stmt.setString(2, room.getType().getDbValue());   // "Single", "Double", etc.
+            stmt.setDouble(3, room.getDailyRate());
+            stmt.setString(4, room.getStatus().getDbValue());
+
+            stmt.executeUpdate();
+            System.out.println("✅ Quarto salvo com sucesso: " + room.getRoomNumber());
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao salvar quarto: " + e.getMessage(), e);
+        }
+    }
+   /**
+    * public void save(Room room) {
+        String sql = "INSERT INTO rooms (room_number, type, daily_rate, status) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, room.getRoomNumber());
             stmt.setString(2, room.getType().getDbValue());   // Usa "Single" ao invés de "SINGLE"
             stmt.setDouble(3, room.getDailyRate());
             stmt.setString(4, room.getStatus().getDbValue());
@@ -36,6 +53,7 @@ public class RoomDAOImpl implements RoomDAO {
             throw new RuntimeException("Erro ao salvar quarto: " + e.getMessage(), e);
         }
     }
+    **/
 
     @Override
     public void update(Room room) {
@@ -162,9 +180,13 @@ public class RoomDAOImpl implements RoomDAO {
         Room room = new Room();
         room.setId(rs.getLong("id"));
         room.setRoomNumber(rs.getString("room_number"));
-        room.setType(RoomType.fromString(rs.getString("type")));   // ← Alterado aqui
+
+        String typeStr = rs.getString("type");
+        room.setType(RoomType.fromString(typeStr));
+
         room.setDailyRate(rs.getDouble("daily_rate"));
         room.setStatus(RoomStatus.fromString(rs.getString("status")));
+
         return room;
     }
 }

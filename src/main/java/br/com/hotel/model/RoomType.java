@@ -16,12 +16,23 @@ public enum RoomType {
     }
 
     public static RoomType fromString(String value) {
-        if (value == null) return null;
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        // Tenta várias formas (maiúscula, minúscula, original)
+        String upper = value.trim().toUpperCase();
+        String lower = value.trim().toLowerCase();
+
         for (RoomType type : values()) {
-            if (type.dbValue.equalsIgnoreCase(value)) {
+            if (type.name().equals(upper) ||
+                    type.dbValue.equalsIgnoreCase(value) ||
+                    type.name().equalsIgnoreCase(value)) {
                 return type;
             }
         }
+
+        System.err.println("⚠️ Tipo de quarto não reconhecido: " + value);
         throw new IllegalArgumentException("Tipo de quarto inválido: " + value);
     }
 

@@ -2,8 +2,15 @@ package br.com.hotel.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import java.io.IOException;
+
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -28,7 +35,19 @@ public class MainController {
             Pane dashboard = loader.load();
             contentArea.getChildren().setAll(dashboard);
         } catch (Exception e) {
-            System.out.println("Bem-vindo ao Sistema de Gerenciamento de Hotel!");
+            e.printStackTrace();
+
+            // Fallback simples e seguro
+            Label welcome = new Label("🏨 Bem-vindo ao Hotel Meia Boca Juniors!");
+            welcome.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+            Label subtitle = new Label("Sistema de Gerenciamento");
+            subtitle.setStyle("-fx-font-size: 18px; -fx-text-fill: #34495e;");
+
+            VBox vbox = new VBox(15, welcome, subtitle);
+            vbox.setAlignment(Pos.CENTER);
+
+            contentArea.getChildren().setAll(vbox);
         }
     }
 

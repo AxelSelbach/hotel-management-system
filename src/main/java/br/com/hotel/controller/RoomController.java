@@ -120,6 +120,8 @@ public class RoomController {
 
             clearForm();
             selectedRoom = null;
+            // Teste temporário
+            System.out.println("Tipo salvo no banco: " + room.getType().getDbValue());
             loadRooms();
 
         } catch (Exception e) {

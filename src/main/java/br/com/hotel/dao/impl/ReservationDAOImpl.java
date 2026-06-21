@@ -248,7 +248,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         Room room = new Room();
         room.setId(rs.getLong("room_id"));
         room.setRoomNumber(rs.getString("room_number"));
-        room.setType(RoomType.valueOf(rs.getString("type")));
+        room.setType(RoomType.fromString(rs.getString("type")));
         room.setDailyRate(rs.getDouble("daily_rate"));
         room.setStatus(RoomStatus.fromString(rs.getString("status")));
         reservation.setRoom(room);

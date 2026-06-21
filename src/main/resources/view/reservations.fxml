@@ -6,80 +6,82 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="br.com.hotel.controller.ReservationController"
-            prefHeight="550.0" 
-            prefWidth="850.0"
+            prefHeight="650.0"
+            prefWidth="1000.0"
             stylesheets="@style.css">
 
-    <!-- CENTER: Formulário de Reserva -->
-    <center>
-        <GridPane hgap="20.0" vgap="15.0" styleClass="card" alignment="CENTER">
+    <!-- TOP: Formulário de Nova Reserva -->
+    <top>
+        <GridPane hgap="20.0" vgap="12.0" styleClass="card">
             <padding>
-                <Insets top="30.0" right="40.0" bottom="30.0" left="40.0"/>
+                <Insets top="20.0" right="30.0" bottom="20.0" left="30.0"/>
             </padding>
             <columnConstraints>
-                <ColumnConstraints percentWidth="35.0" hgrow="ALWAYS"/>
-                <ColumnConstraints percentWidth="65.0" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="30.0"/>
+                <ColumnConstraints percentWidth="70.0"/>
             </columnConstraints>
 
             <children>
-                <!-- Hóspede -->
                 <Label text="Hóspede:" styleClass="label-bold" GridPane.rowIndex="0"/>
-                <ComboBox fx:id="cbGuest" 
-                          promptText="Selecione o hóspede" 
-                          prefWidth="280.0" 
-                          GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="cbGuest" promptText="Selecione o hóspede" 
+                          prefWidth="320.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-                <!-- Quarto -->
                 <Label text="Quarto:" styleClass="label-bold" GridPane.rowIndex="1"/>
-                <ComboBox fx:id="cbRoom" 
-                          promptText="Selecione o quarto" 
-                          prefWidth="280.0" 
-                          GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="cbRoom" promptText="Selecione o quarto" 
+                          prefWidth="320.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                <!-- Check-In -->
                 <Label text="Check-In:" styleClass="label-bold" GridPane.rowIndex="2"/>
-                <DatePicker fx:id="dpCheckIn" 
-                            prefWidth="280.0" 
+                <DatePicker fx:id="dpCheckIn" prefWidth="320.0" 
                             GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                <!-- Check-Out -->
                 <Label text="Check-Out:" styleClass="label-bold" GridPane.rowIndex="3"/>
-                <DatePicker fx:id="dpCheckOut" 
-                            prefWidth="280.0" 
+                <DatePicker fx:id="dpCheckOut" prefWidth="320.0" 
                             GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                <!-- Valor Total -->
                 <Label text="Valor Total:" styleClass="label-bold" GridPane.rowIndex="4"/>
-                <Label fx:id="lblTotal" 
-                       text="R$ 0,00" 
-                       styleClass="lblTotal"
+                <Label fx:id="lblTotal" text="R$ 0,00" styleClass="lblTotal"
                        style="-fx-font-size: 18px; -fx-text-fill: #27ae60; -fx-font-weight: bold;"
                        GridPane.columnIndex="1" GridPane.rowIndex="4"/>
             </children>
         </GridPane>
+    </top>
+
+    <!-- CENTER: Tabela de Reservas -->
+    <center>
+        <VBox>
+            <Label text="Reservas Registradas" 
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 0 8 15;"/>
+
+            <TableView fx:id="tableReservations" prefHeight="300.0">
+                <columns>
+                    <TableColumn fx:id="colId" prefWidth="60" text="ID"/>
+                    <TableColumn fx:id="colGuest" prefWidth="220" text="Hóspede"/>
+                    <TableColumn fx:id="colRoom" prefWidth="100" text="Quarto"/>
+                    <TableColumn fx:id="colCheckIn" prefWidth="110" text="Check-In"/>
+                    <TableColumn fx:id="colCheckOut" prefWidth="110" text="Check-Out"/>
+                    <TableColumn fx:id="colTotal" prefWidth="100" text="Total"/>
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 
-    <!-- BOTTOM: Botões de Ação -->
+    <!-- BOTTOM: Botões -->
     <bottom>
-        <HBox spacing="15.0" alignment="CENTER" prefHeight="80.0">
+        <HBox spacing="12.0" alignment="CENTER" prefHeight="70.0">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="10.0"/>
             </padding>
             <children>
-                <Button fx:id="btnCheckIn" 
-                        text="✅ Check-In" 
-                        onAction="#performCheckIn"
-                        styleClass="button-success"/>
-
-                <Button fx:id="btnCheckOut" 
-                        text="🚪 Check-Out" 
-                        onAction="#performCheckOut"
-                        styleClass="button-primary"/>
-
-                <Button fx:id="btnCancel" 
-                        text="❌ Cancelar" 
-                        onAction="#cancelReservation"
-                        styleClass="button-danger"/>
+                <Button fx:id="btnCheckIn" text="✅ Check-In" 
+                        onAction="#performCheckIn" styleClass="button-success"/>
+                
+                <Button fx:id="btnCheckOut" text="🚪 Check-Out" 
+                        onAction="#performCheckOut" styleClass="button-primary"/>
+                
+                <Button fx:id="btnCancel" text="❌ Limpar" 
+                        onAction="#cancelReservation" styleClass="button-danger"/>
+                
+                <Button text="🔄 Atualizar" onAction="#refreshReservations"/>
             </children>
         </HBox>
     </bottom>

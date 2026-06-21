@@ -72,4 +72,25 @@ public class RoomService {
     public List<Room> findByType(RoomType type) {
         return roomDAO.findByType(type);
     }
+
+    /**
+     * Busca quartos com filtros combinados
+     */
+    public List<Room> findWithFilters(RoomType type, RoomStatus status) {
+        List<Room> rooms = findAll();
+
+        if (type != null) {
+            rooms = rooms.stream()
+                    .filter(room -> room.getType() == type)
+                    .toList();
+        }
+
+        if (status != null) {
+            rooms = rooms.stream()
+                    .filter(room -> room.getStatus() == status)
+                    .toList();
+        }
+
+        return rooms;
+    }
 }

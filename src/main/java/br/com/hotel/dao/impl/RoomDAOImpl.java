@@ -20,7 +20,7 @@ public class RoomDAOImpl implements RoomDAO {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, room.getRoomNumber());
-            stmt.setString(2, room.getType().name());
+            stmt.setString(2, room.getType().getDbValue());   // Usa "Single" ao invés de "SINGLE"
             stmt.setDouble(3, room.getDailyRate());
             stmt.setString(4, room.getStatus().getDbValue());
 
@@ -33,7 +33,7 @@ public class RoomDAOImpl implements RoomDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar quarto", e);
+            throw new RuntimeException("Erro ao salvar quarto: " + e.getMessage(), e);
         }
     }
 
@@ -44,14 +44,14 @@ public class RoomDAOImpl implements RoomDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, room.getRoomNumber());
-            stmt.setString(2, room.getType().name());
+            stmt.setString(2, room.getType().getDbValue());
             stmt.setDouble(3, room.getDailyRate());
             stmt.setString(4, room.getStatus().getDbValue());
             stmt.setLong(5, room.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar quarto", e);
+            throw new RuntimeException("Erro ao atualizar quarto" + e.getMessage(), e);
         }
     }
 
@@ -162,7 +162,7 @@ public class RoomDAOImpl implements RoomDAO {
         Room room = new Room();
         room.setId(rs.getLong("id"));
         room.setRoomNumber(rs.getString("room_number"));
-        room.setType(RoomType.valueOf(rs.getString("type")));
+        room.setType(RoomType.fromString(rs.getString("type")));   // ← Alterado aqui
         room.setDailyRate(rs.getDouble("daily_rate"));
         room.setStatus(RoomStatus.fromString(rs.getString("status")));
         return room;

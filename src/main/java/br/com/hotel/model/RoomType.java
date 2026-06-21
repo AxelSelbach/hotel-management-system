@@ -3,20 +3,30 @@ package br.com.hotel.model;
 public enum RoomType {
     SINGLE("Single"),
     DOUBLE("Double"),
-    LUXURY("luxury");
+    LUXURY("Luxury");
 
-    private final String displayName;
+    private final String dbValue;
 
-    RoomType(String displayName){
-        this.displayName = displayName;
+    RoomType(String dbValue) {
+        this.dbValue = dbValue;
     }
 
-    public String getDisplayName(){
-        return displayName;
+    public String getDbValue() {
+        return dbValue;
+    }
+
+    public static RoomType fromString(String value) {
+        if (value == null) return null;
+        for (RoomType type : values()) {
+            if (type.dbValue.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Tipo de quarto inválido: " + value);
     }
 
     @Override
     public String toString() {
-        return displayName;
+        return dbValue;
     }
 }

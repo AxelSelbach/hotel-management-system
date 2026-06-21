@@ -6,38 +6,65 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="br.com.hotel.controller.GuestController"
-            prefHeight="500.0" 
-            prefWidth="800.0"
+            prefHeight="550.0"
+            prefWidth="950.0"
             stylesheets="@../style.css">
 
-    <!-- TOP: Barra de Busca -->
-    <top>
-        <HBox prefHeight="60.0" spacing="10.0" alignment="CENTER_LEFT">
+    <!-- LEFT: Formulário de Cadastro -->
+    <left>
+        <VBox spacing="12.0" prefWidth="280.0" styleClass="card">
             <padding>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
+                <Insets top="20.0" right="15.0" bottom="20.0" left="15.0"/>
             </padding>
             <children>
-                <Label text="Buscar por CPF:" styleClass="label-bold"/>
-                <TextField fx:id="txtCpfSearch" 
-                           promptText="Digite o CPF" 
-                           prefWidth="200.0"/>
-                <Button text="Buscar" fx:id="btnSearch" onAction="#searchGuest"/>
-            </children>
-        </HBox>
-    </top>
+                <Label text="Cadastro de Hóspede" styleClass="title-label" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
 
-    <!-- CENTER: Tabela -->
+                <Label text="Nome Completo"/>
+                <TextField fx:id="txtName" promptText="Nome completo"/>
+
+                <Label text="CPF"/>
+                <TextField fx:id="txtCpf" promptText="000.000.000-00"/>
+
+                <Label text="Telefone"/>
+                <TextField fx:id="txtPhone" promptText="(00) 00000-0000"/>
+
+                <Label text="E-mail"/>
+                <TextField fx:id="txtEmail" promptText="email@exemplo.com"/>
+
+                <HBox spacing="10.0" alignment="CENTER">
+                    <Button fx:id="btnSave" text="💾 Salvar" onAction="#saveGuest" styleClass="button-primary"/>
+                    <Button fx:id="btnNew" text="Novo" onAction="#newGuest" styleClass="button-primary"/>
+                </HBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- CENTER: Tabela + Busca -->
     <center>
-        <TableView fx:id="tableGuests" 
-                   prefHeight="300.0">
-            <columns>
-                <TableColumn fx:id="colID"    prefWidth="60.0"  text="ID" />
-                <TableColumn fx:id="colName"  prefWidth="180.0" text="Nome" />
-                <TableColumn fx:id="colCPF"   prefWidth="120.0" text="CPF" />
-                <TableColumn fx:id="colPhone" prefWidth="130.0" text="Telefone" />
-                <TableColumn fx:id="colEmail" prefWidth="220.0" text="E-mail" />
-            </columns>
-        </TableView>
+        <VBox>
+            <!-- Barra de Busca -->
+            <HBox prefHeight="60.0" spacing="10.0" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
+                </padding>
+                <children>
+                    <Label text="Buscar por CPF:" styleClass="label-bold"/>
+                    <TextField fx:id="txtCpfSearch" promptText="Digite o CPF" prefWidth="200.0"/>
+                    <Button text="Buscar" fx:id="btnSearch" onAction="#searchGuest"/>
+                </children>
+            </HBox>
+
+            <!-- Tabela -->
+            <TableView fx:id="tableGuests">
+                <columns>
+                    <TableColumn fx:id="colID"    prefWidth="60.0"  text="ID" />
+                    <TableColumn fx:id="colName"  prefWidth="180.0" text="Nome" />
+                    <TableColumn fx:id="colCPF"   prefWidth="120.0" text="CPF" />
+                    <TableColumn fx:id="colPhone" prefWidth="130.0" text="Telefone" />
+                    <TableColumn fx:id="colEmail" prefWidth="220.0" text="E-mail" />
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 
     <!-- BOTTOM: Botões de Ação -->
@@ -47,9 +74,8 @@
                 <Insets bottom="15.0" left="15.0" right="15.0" top="10.0"/>
             </padding>
             <children>
-                <Button fx:id="btnNew"    text="Novo"    onAction="#newGuest"    styleClass="button-primary"/>
-                <Button fx:id="btnEdit"   text="Editar"  onAction="#editGuest"   styleClass="button-primary"/>
-                <Button fx:id="btnDelete" text="Excluir" onAction="#deleteGuest" styleClass="button-danger"/>
+                <Button fx:id="btnEdit"   text="✏️ Editar"   onAction="#editGuest"   styleClass="button-primary"/>
+                <Button fx:id="btnDelete" text="🗑️ Excluir" onAction="#deleteGuest" styleClass="button-danger"/>
             </children>
         </HBox>
     </bottom>

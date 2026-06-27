@@ -10,20 +10,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Carrega a tela principal (dashboard)
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
 
             Scene scene = new Scene(loader.load());
 
-            // Configurações da janela principal
-            primaryStage.setTitle("Hotel Meia Boca Juniors - Sistema de Gerenciamento");
+            primaryStage.setTitle("Hotel Meia Boca Juniors - Login");
             primaryStage.setScene(scene);
-            primaryStage.setMinWidth(1000);
-            primaryStage.setMinHeight(650);
-            primaryStage.setResizable(true);
-
-            primaryStage.setMaximized(true);
-
+            primaryStage.setResizable(false);
             primaryStage.show();
 
         } catch (Exception e) {

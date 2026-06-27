@@ -3,7 +3,6 @@ package br.com.hotel.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Data
@@ -16,4 +15,5 @@ public class Reservation {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private double totalAmount;
+    private ReservationStatus status = ReservationStatus.CONFIRMED;
 }

@@ -60,28 +60,38 @@
                     <TableColumn fx:id="colCheckIn" prefWidth="110" text="Check-In"/>
                     <TableColumn fx:id="colCheckOut" prefWidth="110" text="Check-Out"/>
                     <TableColumn fx:id="colTotal" prefWidth="100" text="Total"/>
+		    <TableColumn fx:id="colStatus" prefWidth="110" text="Status"/>
                 </columns>
             </TableView>
         </VBox>
     </center>
 
-    <!-- BOTTOM: Botões -->
+    <!-- BOTTOM: Botões de Ação -->
     <bottom>
         <HBox spacing="12.0" alignment="CENTER" prefHeight="70.0">
             <padding>
-                <Insets bottom="15.0" left="20.0" right="20.0" top="10.0"/>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
             </padding>
             <children>
-                <Button fx:id="btnCheckIn" text="✅ Check-In" 
-                        onAction="#performCheckIn" styleClass="button-success"/>
-                
-                <Button fx:id="btnCheckOut" text="🚪 Check-Out" 
-                        onAction="#performCheckOut" styleClass="button-primary"/>
-                
-                <Button fx:id="btnCancel" text="❌ Limpar" 
-                        onAction="#cancelReservation" styleClass="button-danger"/>
-                
-                <Button text="🔄 Atualizar" onAction="#refreshReservations"/>
+                <Button fx:id="btnReserve" 
+                        text="📝 Reservar" 
+                        onAction="#createReservation"
+                        styleClass="button-primary"/>
+
+                <Button fx:id="btnCheckIn" 
+                        text="✅ Check-In" 
+                        onAction="#performCheckIn"
+                        styleClass="button-success"/>
+
+                <Button fx:id="btnCheckOut" 
+                        text="🚪 Check-Out" 
+                        onAction="#performCheckOut"
+                        styleClass="button-primary"/>
+
+                <Button fx:id="btnCancelReservation" 
+                    text="❌ Cancelar Reserva" 
+                    onAction="#cancelReservation"
+                    styleClass="button-danger"/>
             </children>
         </HBox>
     </bottom>

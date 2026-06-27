@@ -45,11 +45,11 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     public void update(Reservation reservation) {
         String sql = """
-            UPDATE reservations SET 
-            guest_id = ?, room_id = ?, check_in_date = ?, 
-            check_out_date = ?, total_amount = ? 
-            WHERE id = ?
-            """;
+        UPDATE reservations 
+        SET guest_id = ?, room_id = ?, check_in_date = ?, 
+            check_out_date = ?, total_amount = ?, status = ? 
+        WHERE id = ?
+        """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -59,7 +59,8 @@ public class ReservationDAOImpl implements ReservationDAO {
             stmt.setDate(3, Date.valueOf(reservation.getCheckInDate()));
             stmt.setDate(4, Date.valueOf(reservation.getCheckOutDate()));
             stmt.setDouble(5, reservation.getTotalAmount());
-            stmt.setLong(6, reservation.getId());
+            stmt.setString(6, reservation.getStatus().name());  // Salva como "CHECKED_OUT"
+            stmt.setLong(7, reservation.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -250,7 +251,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         room.setRoomNumber(rs.getString("room_number"));
         room.setType(RoomType.fromString(rs.getString("type")));
         room.setDailyRate(rs.getDouble("daily_rate"));
-        room.setStatus(RoomStatus.fromString(rs.getString("status")));
+        reservation.setStatus(ReservationStatus.fromString(rs.getString("status")));
         reservation.setRoom(room);
 
         return reservation;

@@ -1,8 +1,6 @@
 package br.com.hotel.controller;
 
-import br.com.hotel.model.Guest;
-import br.com.hotel.model.Reservation;
-import br.com.hotel.model.Room;
+import br.com.hotel.model.*;
 import br.com.hotel.service.GuestService;
 import br.com.hotel.service.ReservationService;
 import br.com.hotel.service.RoomService;
@@ -32,6 +30,7 @@ public class ReservationController {
     @FXML private TableColumn<Reservation, LocalDate> colCheckIn;
     @FXML private TableColumn<Reservation, LocalDate> colCheckOut;
     @FXML private TableColumn<Reservation, Double> colTotal;
+    @FXML private TableColumn<Reservation, ReservationStatus> colStatus;
 
     private final ObservableList<Reservation> reservationList = FXCollections.observableArrayList();
 
@@ -41,7 +40,6 @@ public class ReservationController {
         loadComboBoxes();
         refreshReservations();
 
-        // Atualiza valor total automaticamente
         dpCheckIn.valueProperty().addListener((obs, old, newV) -> calculateTotal());
         dpCheckOut.valueProperty().addListener((obs, old, newV) -> calculateTotal());
     }
@@ -55,14 +53,35 @@ public class ReservationController {
         colCheckIn.setCellValueFactory(new PropertyValueFactory<>("checkInDate"));
         colCheckOut.setCellValueFactory(new PropertyValueFactory<>("checkOutDate"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        // Colorir a coluna de Status
+        colStatus.setCellFactory(column -> new TableCell<Reservation, ReservationStatus>() {
+            @Override
+            protected void updateItem(ReservationStatus status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(status.getDisplayName());
+                    switch (status) {
+                        case CHECKED_OUT -> setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+                        case CHECKED_IN -> setStyle("-fx-text-fill: #e67e22; -fx-font-weight: bold;");
+                        case CANCELLED -> setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+                        default -> setStyle("-fx-text-fill: #3498db;");
+                    }
+                }
+            }
+        });
 
         tableReservations.setItems(reservationList);
     }
 
     private void loadComboBoxes() {
-        // Hóspedes
-        cbGuest.getItems().clear();
+        // HÓSPEDES E QUARTOS
         cbGuest.getItems().addAll(guestService.findAll());
+        cbRoom.getItems().addAll(roomService.findAvailableRooms());
 
         cbGuest.setConverter(new javafx.util.StringConverter<Guest>() {
             @Override
@@ -76,10 +95,6 @@ public class ReservationController {
                 return null;
             }
         });
-
-        // Quartos
-        cbRoom.getItems().clear();
-        cbRoom.getItems().addAll(roomService.findAvailableRooms());
 
         cbRoom.setConverter(new javafx.util.StringConverter<Room>() {
             @Override
@@ -122,7 +137,7 @@ public class ReservationController {
     }
 
     @FXML
-    private void performCheckIn() {
+    private void createReservation() {
         try {
             if (cbGuest.getValue() == null || cbRoom.getValue() == null ||
                     dpCheckIn.getValue() == null || dpCheckOut.getValue() == null) {
@@ -135,11 +150,11 @@ public class ReservationController {
             reservation.setRoom(cbRoom.getValue());
             reservation.setCheckInDate(dpCheckIn.getValue());
             reservation.setCheckOutDate(dpCheckOut.getValue());
+            reservation.setStatus(ReservationStatus.CONFIRMED); // ← Confirmada
 
             reservationService.save(reservation);
-            reservationService.checkIn(reservation.getId());
 
-            showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Check-In realizado com sucesso!");
+            showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Reserva criada com sucesso!");
             refreshReservations();
             clearForm();
 
@@ -149,17 +164,59 @@ public class ReservationController {
     }
 
     @FXML
-    private void performCheckOut() {
+    private void performCheckIn() {
         Reservation selected = tableReservations.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione uma reserva para fazer Check-Out.");
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione uma reserva para fazer Check-In.");
+            return;
+        }
+
+        if (selected.getStatus() != ReservationStatus.CONFIRMED) {
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Só é possível fazer check-in em reservas confirmadas.");
             return;
         }
 
         try {
-            double total = reservationService.checkOut(selected.getId());
-            showAlert(Alert.AlertType.INFORMATION, "Check-Out",
-                    "Check-Out realizado!\nValor total: R$ " + String.format("%.2f", total));
+            reservationService.checkIn(selected.getId());
+            showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Check-In realizado com sucesso!");
+            refreshReservations();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erro", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void performCheckOut() {
+        Reservation selected = tableReservations.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione uma reserva para realizar o Check-Out.");
+            return;
+        }
+
+        // Validações
+        if (selected.getStatus() == ReservationStatus.CANCELLED) {
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Não é possível fazer Check-Out de uma reserva cancelada.");
+            return;
+        }
+
+        if (selected.getStatus() == ReservationStatus.CHECKED_OUT) {
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Esta reserva já foi finalizada.");
+            return;
+        }
+
+        if (selected.getStatus() == ReservationStatus.CONFIRMED) {
+            showAlert(Alert.AlertType.WARNING, "Aviso",
+                    "Esta reserva ainda não teve Check-In. Faça o Check-In primeiro.");
+            return;
+        }
+
+        try {
+            double totalAmount = reservationService.checkOut(selected.getId());
+            showAlert(Alert.AlertType.INFORMATION, "Check-Out Concluído",
+                    "Estadia finalizada com sucesso!\n\n" +
+                            "Hóspede: " + selected.getGuest().getName() + "\n" +
+                            "Valor Total: R$ " + String.format("%.2f", totalAmount));
+
             refreshReservations();
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erro", e.getMessage());
@@ -168,7 +225,45 @@ public class ReservationController {
 
     @FXML
     private void cancelReservation() {
-        clearForm();
+        Reservation selected = tableReservations.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Aviso", "Selecione uma reserva para cancelar.");
+            return;
+        }
+
+        // Validação: só permite cancelar reservas Confirmadas
+        if (selected.getStatus() != ReservationStatus.CONFIRMED) {
+            showAlert(Alert.AlertType.WARNING, "Aviso",
+                    "Só é possível cancelar reservas que ainda estão 'Confirmadas'.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Cancelamento");
+        confirm.setContentText("Deseja realmente cancelar a reserva do hóspede " +
+                selected.getGuest().getName() + "?\n\n" +
+                "Esta ação não poderá ser desfeita.");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    // Libera o quarto
+                    Room room = selected.getRoom();
+                    room.setStatus(RoomStatus.AVAILABLE);
+                    roomService.update(room);
+
+                    // Atualiza status da reserva
+                    selected.setStatus(ReservationStatus.CANCELLED);
+                    reservationService.update(selected);  // ou reservationService.update()
+
+                    showAlert(Alert.AlertType.INFORMATION, "Cancelado",
+                            "Reserva cancelada com sucesso!");
+                    refreshReservations();
+                } catch (Exception e) {
+                    showAlert(Alert.AlertType.ERROR, "Erro", e.getMessage());
+                }
+            }
+        });
     }
 
     private void clearForm() {

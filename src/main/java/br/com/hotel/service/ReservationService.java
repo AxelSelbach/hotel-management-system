@@ -3,6 +3,8 @@ package br.com.hotel.service;
 import br.com.hotel.dao.ReservationDAO;
 import br.com.hotel.dao.impl.ReservationDAOImpl;
 import br.com.hotel.model.Reservation;
+import br.com.hotel.model.ReservationStatus;
+import br.com.hotel.model.Room;
 import br.com.hotel.model.RoomStatus;
 
 
@@ -49,17 +51,27 @@ public class ReservationService {
 
     //Realiza o check-in de uma reserva, alterando o status do quarto para ocupado.
     public void checkIn(Long reservationId) {
-        Optional<Reservation> optReservation = reservationDAO.findById(reservationId);
-        if (optReservation.isEmpty()) {
+        Optional<Reservation> opt = reservationDAO.findById(reservationId);
+        if (opt.isEmpty()) {
             throw new RuntimeException("Reserva não encontrada.");
         }
 
-        Reservation reservation = optReservation.get();
-        if (reservation.getRoom().getStatus() != RoomStatus.AVAILABLE) {
-            throw new RuntimeException("Quarto não está disponível para check-in.");
+        Reservation reservation = opt.get();
+
+        if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
+            throw new RuntimeException("Só é possível fazer check-in em reservas confirmadas.");
         }
 
         reservationDAO.checkIn(reservationId);
+
+        // Atualiza status da reserva
+        reservation.setStatus(ReservationStatus.CHECKED_IN);
+        reservationDAO.update(reservation);
+
+        // Atualiza status do quarto
+        Room room = reservation.getRoom();
+        room.setStatus(RoomStatus.OCCUPIED);
+        roomService.update(room);
     }
 
     //Realiza o check-out de uma reserva, liberando o quarto.
@@ -69,15 +81,42 @@ public class ReservationService {
             throw new RuntimeException("Reserva não encontrada.");
         }
 
+        Reservation reservation = optReservation.get();
+
+        if (reservation.getStatus() == ReservationStatus.CHECKED_OUT) {
+            throw new RuntimeException("Esta reserva já foi finalizada.");
+        }
+
+        // Libera o quarto
         reservationDAO.checkOut(reservationId);
-        return optReservation.get().getTotalAmount();
+
+        // Atualiza status da reserva para Finalizada
+        reservation.setStatus(ReservationStatus.CHECKED_OUT);
+        reservationDAO.update(reservation);
+
+        // Atualiza status do quarto para Available
+        Room room = reservation.getRoom();
+        room.setStatus(RoomStatus.AVAILABLE);
+        roomService.update(room);
+
+        return reservation.getTotalAmount();
     }
 
     //Salva uma nova reserva, validando dados e calculando o valor total.
     public void save(Reservation reservation) {
         validateReservation(reservation);
         calculateTotalAmount(reservation);
+
+        if (reservation.getRoom().getStatus() != RoomStatus.AVAILABLE) {
+            throw new RuntimeException("Quarto não está disponível para reserva.");
+        }
+
         reservationDAO.save(reservation);
+    }
+
+    //Atualiza o status da reserva
+    public void update(Reservation reservation) {
+        reservationDAO.update(reservation);
     }
 
     //Retorna todas as reservas

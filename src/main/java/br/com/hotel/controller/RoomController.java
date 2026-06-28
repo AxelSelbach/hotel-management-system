@@ -40,6 +40,11 @@ public class RoomController {
         configureTable();
         loadRooms();
         loadComboBoxes();
+        this.getClass().getSimpleName();
+    }
+
+    public void refreshData() {
+        loadRooms();
     }
 
     private void configureTable() {
@@ -181,7 +186,7 @@ public class RoomController {
     }
 
     @FXML
-    private void filterRooms() {
+    public void filterRooms() {
         try {
             RoomType selectedType = cbType.getValue();
             RoomStatus selectedStatus = cbStatus.getValue();

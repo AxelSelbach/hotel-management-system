@@ -52,6 +52,12 @@ public class MainController {
     @FXML
     private void openRoomsScreen() {
         loadContent("/view/rooms.fxml", roomsPane, p -> roomsPane = p);
+        if (roomsPane != null) {
+            try {
+                java.lang.reflect.Method refreshMethod = roomsPane.getUserData().getClass().getMethod("refreshData");
+                refreshMethod.invoke(roomsPane.getUserData());
+            } catch (Exception ignored) {}
+        }
     }
 
     @FXML
@@ -59,22 +65,46 @@ public class MainController {
         loadContent("/view/reservations.fxml", reservationsPane, p -> reservationsPane = p);
     }
 
+    private void refreshCurrentTab() {
+        Object controller = contentArea.getChildren().get(0).getUserData();
+        if (controller != null) {
+            try {
+                java.lang.reflect.Method refreshMethod = controller.getClass().getMethod("refreshData");
+                refreshMethod.invoke(controller);
+            } catch (Exception ignored) {}
+        }
+    }
+
     private void loadContent(String fxmlPath, Pane cachedPane, java.util.function.Consumer<Pane> setter) {
         try {
             Pane paneToLoad;
+
             if (cachedPane == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 paneToLoad = loader.load();
-                setter.accept(paneToLoad);   // Salva no cache
+
+                // Importante: Salva o controller como userData
+                Object controller = loader.getController();
+                paneToLoad.setUserData(controller);
+
+                setter.accept(paneToLoad);
             } else {
                 paneToLoad = cachedPane;
             }
 
             contentArea.getChildren().setAll(paneToLoad);
 
-        } catch (IOException e) {
+            Object controller = paneToLoad.getUserData();
+            if (controller != null) {
+                try {
+                    java.lang.reflect.Method refreshMethod = controller.getClass().getMethod("refreshData");
+                    refreshMethod.invoke(controller);
+                } catch (Exception ignored) {
+
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erro", "Não foi possível carregar a tela: " + fxmlPath);
         }
     }
 

@@ -6,7 +6,7 @@ import br.com.hotel.model.Reservation;
 import br.com.hotel.model.ReservationStatus;
 import br.com.hotel.model.Room;
 import br.com.hotel.model.RoomStatus;
-
+import br.com.hotel.service.RoomService;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -14,7 +14,6 @@ import java.util.Optional;
 
 /**
  * Service responsável pelas regras de negócio de reservas.
- * Contém lógica de cálculo de diárias, validações e operações de check-in/check-out.
  */
 public class ReservationService {
 
@@ -26,7 +25,6 @@ public class ReservationService {
         this.roomService = new RoomService();
     }
 
-    //Calcula o valor total da reserva com base na quantidade de diárias
     private void calculateTotalAmount(Reservation reservation) {
         long days = ChronoUnit.DAYS.between(reservation.getCheckInDate(), reservation.getCheckOutDate());
         if (days <= 0) {
@@ -36,7 +34,6 @@ public class ReservationService {
         reservation.setTotalAmount(total);
     }
 
-    //Valida os dados obrigatórios de uma reserva
     private void validateReservation(Reservation reservation) {
         if (reservation.getGuest() == null || reservation.getGuest().getId() == null) {
             throw new RuntimeException("Hóspede é obrigatório.");
@@ -49,7 +46,22 @@ public class ReservationService {
         }
     }
 
-    //Realiza o check-in de uma reserva, alterando o status do quarto para ocupado.
+    public void save(Reservation reservation) {
+        validateReservation(reservation);
+        calculateTotalAmount(reservation);
+
+        Room room = reservation.getRoom();
+        if (room.getStatus() != RoomStatus.AVAILABLE) {
+            throw new RuntimeException("Quarto não está disponível para reserva.");
+        }
+
+        room.setStatus(RoomStatus.OCCUPIED);
+        roomService.update(room);
+
+        reservation.setStatus(ReservationStatus.CONFIRMED);
+        reservationDAO.save(reservation);
+    }
+
     public void checkIn(Long reservationId) {
         Optional<Reservation> opt = reservationDAO.findById(reservationId);
         if (opt.isEmpty()) {
@@ -64,17 +76,10 @@ public class ReservationService {
 
         reservationDAO.checkIn(reservationId);
 
-        // Atualiza status da reserva
         reservation.setStatus(ReservationStatus.CHECKED_IN);
         reservationDAO.update(reservation);
-
-        // Atualiza status do quarto
-        Room room = reservation.getRoom();
-        room.setStatus(RoomStatus.OCCUPIED);
-        roomService.update(room);
     }
 
-    //Realiza o check-out de uma reserva, liberando o quarto.
     public double checkOut(Long reservationId) {
         Optional<Reservation> optReservation = reservationDAO.findById(reservationId);
         if (optReservation.isEmpty()) {
@@ -87,14 +92,11 @@ public class ReservationService {
             throw new RuntimeException("Esta reserva já foi finalizada.");
         }
 
-        // Libera o quarto
         reservationDAO.checkOut(reservationId);
 
-        // Atualiza status da reserva para Finalizada
         reservation.setStatus(ReservationStatus.CHECKED_OUT);
         reservationDAO.update(reservation);
 
-        // Atualiza status do quarto para Available
         Room room = reservation.getRoom();
         room.setStatus(RoomStatus.AVAILABLE);
         roomService.update(room);
@@ -102,29 +104,14 @@ public class ReservationService {
         return reservation.getTotalAmount();
     }
 
-    //Salva uma nova reserva, validando dados e calculando o valor total.
-    public void save(Reservation reservation) {
-        validateReservation(reservation);
-        calculateTotalAmount(reservation);
-
-        if (reservation.getRoom().getStatus() != RoomStatus.AVAILABLE) {
-            throw new RuntimeException("Quarto não está disponível para reserva.");
-        }
-
-        reservationDAO.save(reservation);
-    }
-
-    //Atualiza o status da reserva
     public void update(Reservation reservation) {
         reservationDAO.update(reservation);
     }
 
-    //Retorna todas as reservas
     public List<Reservation> findAll() {
         return reservationDAO.findAll();
     }
 
-    //Retorna todas as reservas pelo ID do hóspede
     public List<Reservation> findByGuestId(Long guestId) {
         return reservationDAO.findByGuestId(guestId);
     }

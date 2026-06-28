@@ -39,9 +39,15 @@ public class ReservationController {
         configureTable();
         loadComboBoxes();
         refreshReservations();
+        this.getClass().getSimpleName();
 
         dpCheckIn.valueProperty().addListener((obs, old, newV) -> calculateTotal());
         dpCheckOut.valueProperty().addListener((obs, old, newV) -> calculateTotal());
+    }
+
+    public void refreshData() {
+        refreshReservations();
+        loadComboBoxes();
     }
 
     private void configureTable() {
@@ -79,8 +85,12 @@ public class ReservationController {
     }
 
     private void loadComboBoxes() {
-        // HÓSPEDES E QUARTOS
+        // Hóspedes
+        cbGuest.getItems().clear();
         cbGuest.getItems().addAll(guestService.findAll());
+
+        //Quartos DISPONÍVEIS apenas
+        cbRoom.getItems().clear();
         cbRoom.getItems().addAll(roomService.findAvailableRooms());
 
         cbGuest.setConverter(new javafx.util.StringConverter<Guest>() {
@@ -180,6 +190,8 @@ public class ReservationController {
             reservationService.checkIn(selected.getId());
             showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Check-In realizado com sucesso!");
             refreshReservations();
+            loadComboBoxes();
+
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erro", e.getMessage());
         }

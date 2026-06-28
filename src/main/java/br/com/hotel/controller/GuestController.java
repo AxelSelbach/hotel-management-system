@@ -34,6 +34,11 @@ public class GuestController {
     public void initialize() {
         configureTable();
         loadAllGuests();
+        this.getClass().getSimpleName();
+    }
+
+    public void refreshData() {
+        loadAllGuests();
     }
 
     private void configureTable() {
